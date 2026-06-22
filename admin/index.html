@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Admin · Meier Distribuciones</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../styles.css" />
+<link rel="stylesheet" href="admin.css" />
+</head>
+<body class="admin">
+
+<section class="login" id="login">
+  <div class="login__card">
+    <a href="../" class="logo" style="justify-content:center;margin-bottom:1.4rem">
+      <span class="logo__mark">M</span>
+      <span class="logo__text">Meier<span>Distribuciones</span></span>
+    </a>
+    <h2 style="text-align:center">Panel administrador</h2>
+    <p style="text-align:center;color:#64748b;margin:.4rem 0 1.6rem">Ingresá tus credenciales</p>
+    <form class="form" id="loginForm" novalidate style="padding:0">
+      <label>Usuario<input name="user" required placeholder="admin" /></label>
+      <label>Contraseña<input name="pass" type="password" required placeholder="••••••••" /></label>
+      <button class="btn btn--primary btn--lg btn--block" type="submit">Ingresar</button>
+      <p style="font-size:.78rem;color:#94a3b8;text-align:center">Demo: admin / admin</p>
+    </form>
+  </div>
+</section>
+
+<div class="layout hidden" id="dashboard">
+  <aside class="sidebar">
+    <a href="../" class="logo logo--light">
+      <span class="logo__mark">M</span>
+      <span class="logo__text">Meier<span>Admin</span></span>
+    </a>
+    <nav class="sidenav">
+      <a class="active" href="#"><span>Dashboard</span></a>
+      <a href="#"><span>Productos</span></a>
+      <a href="#"><span>Marcas</span></a>
+      <a href="#"><span>Categorías</span></a>
+    </nav>
+    <button class="btn btn--ghost" id="logout" style="margin-top:auto">Cerrar sesión</button>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div>
+        <h2>Dashboard</h2>
+        <p style="color:#64748b;font-size:.9rem">Bienvenido al panel de administración</p>
+      </div>
+      <button class="btn btn--primary" id="openNew">+ Nuevo producto</button>
+    </header>
+
+    <section class="stats">
+      <div class="stat"><span>Productos totales</span><strong id="sProducts">0</strong></div>
+      <div class="stat"><span>Marcas</span><strong id="sBrands">0</strong></div>
+      <div class="stat"><span>Categorías</span><strong id="sCats">0</strong></div>
+      <div class="stat"><span>Valor catálogo</span><strong id="sValue">$0</strong></div>
+    </section>
+
+    <section class="panel">
+      <header class="panel__head">
+        <h3>Productos</h3>
+        <input id="adminSearch" class="ainput" placeholder="Buscar producto..." />
+      </header>
+      <div id="adminGrid" class="adminGrid"></div>
+    </section>
+  </main>
+</div>
+
+<div class="modal" id="prodModal">
+  <div class="modal__card">
+    <header class="modal__head">
+      <h3 id="prodTitle">Nuevo producto</h3>
+      <button class="icon-btn" id="prodClose">✕</button>
+    </header>
+    <form id="prodForm" class="form" novalidate>
+      <label>Nombre<input name="name" required /></label>
+      <div class="form__row">
+        <label>Marca<input name="brand" required /></label>
+        <label>Categoría
+          <select name="category" required>
+            <option value="bebidas">Bebidas</option>
+            <option value="alimentos">Alimentos</option>
+            <option value="limpieza">Limpieza</option>
+            <option value="otros">Otros</option>
+          </select>
+        </label>
+      </div>
+      <div class="form__row">
+        <label>Precio<input name="price" type="number" min="0" step="1" required /></label>
+        <label>Imagen (URL)<input name="image" type="url" placeholder="https://..." /></label>
+      </div>
+      <button class="btn btn--primary btn--lg btn--block" type="submit">Guardar Producto</button>
+    </form>
+  </div>
+</div>
+
+<script src="../data.js"></script>
+<script src="admin.js"></script>
+</body>
+</html>
