@@ -1,0 +1,90 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Panel Administrativo | Meier Distribuciones</title>
+
+    <meta name="description" content="Panel administrativo de Meier Distribuciones">
+
+    <link rel="icon" href="assets/img/favicon.png">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="admin.css">
+
+</head>
+
+<body class="login-page">
+
+    <div class="background"></div>
+
+    <main class="login-container">
+        <section class="login-box card">
+            <div class="login-brand">
+                <img src="assets/img/logo.png" alt="Meier Distribuciones">
+                <div>
+                    <h1>MEIER</h1>
+                    <p>DISTRIBUCIONES</p>
+                </div>
+            </div>
+
+            <div class="login-header">
+                <h2>Bienvenido al panel</h2>
+                <p>Inicia sesión para administrar clientes, compras, ventas y stock.</p>
+            </div>
+
+            <form id="loginForm" autocomplete="off">
+                <div class="input-group">
+                    <label for="usuario">Usuario</label>
+                    <input
+                        type="text"
+                        id="usuario"
+                        name="usuario"
+                        required
+                        maxlength="50"
+                        autocomplete="username"
+                        placeholder="Ingrese su usuario">
+                </div>
+
+                <div class="input-group">
+                    <label for="password">Contraseña</label>
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        required
+                        maxlength="100"
+                        autocomplete="current-password"
+                        placeholder="Ingrese su contraseña">
+                </div>
+
+                <button type="submit" id="btnLogin" class="btn btn-primary w100">
+                    Ingresar
+                </button>
+
+                <div id="mensaje" class="mensaje" role="status" aria-live="polite" aria-atomic="true"></div>
+            </form>
+        </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script src="supabase.js"></script>
+
+    <script src="auth.js"></script>
+
+    <script src="login.js"></script>
+    <script src="admin-ui.js"></script>
+
+</body>
+
+</html>

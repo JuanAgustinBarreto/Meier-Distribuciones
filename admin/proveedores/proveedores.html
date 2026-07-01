@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proveedores | Meier ERP</title>
+
+    <link rel="stylesheet" href="../admin.css">
+    <link rel="stylesheet" href="proveedores.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+<div class="dashboard">
+
+    <aside class="sidebar">
+
+        <div class="logoPanel">
+            <h2>MEIER</h2>
+            <p>ERP SISTEMA</p>
+        </div>
+
+        <nav>
+            <a href="../dashboard.html">🏠 Dashboard</a>
+            <a href="../productos/productos.html">📦 Productos</a>
+            <a href="../compras.html">🚚 Compras</a>
+            <a href="../clientes/clientes.html">👥 Clientes</a>
+            <a href="../reportes.html">📈 Reportes</a>
+            <a href="../estadisticas/estadisticas.html">📊 Estadísticas</a>
+            <a href="proveedores.html">🏢 Proveedores</a>
+        </nav>
+
+        <button id="logout">Cerrar sesión</button>
+
+    </aside>
+
+    <main>
+
+        <h1>🏢 Proveedores</h1>
+
+        <!-- RESUMEN -->
+        <section class="card">
+            <h3>Total proveedores</h3>
+            <h2 id="proveedoresTotal">0</h2>
+        </section>
+
+        <!-- FORM -->
+        <section>
+            <h2>Nuevo proveedor</h2>
+
+            <form id="proveedorForm">
+
+                <input type="text" id="nombre" placeholder="Nombre del proveedor" required>
+
+                <input type="text" id="telefono" placeholder="Teléfono">
+
+                <input type="text" id="direccion" placeholder="Dirección">
+
+                <input type="text" id="contacto" placeholder="Persona de contacto">
+
+                <textarea id="observaciones" placeholder="Observaciones"></textarea>
+
+                <button type="submit">Guardar proveedor</button>
+
+            </form>
+        </section>
+
+        <!-- LISTA -->
+        <section>
+            <h2>Listado de proveedores</h2>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Teléfono</th>
+                            <th>Dirección</th>
+                            <th>Contacto</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="proveedoresTable">
+                        <tr>
+                            <td colspan="5" style="padding:18px;text-align:center;color:#6b7280;">
+                                No hay proveedores registrados.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+<script src="proveedores.js"></script>
+
+    <script src="../admin-ui.js"></script>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compras | Meier Distribuciones</title>
+    <link rel="stylesheet" href="admin.css">
+    <link rel="stylesheet" href="compras.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+<script src="auth.js"></script>
+
+<div class="dashboard">
+
+    <aside class="sidebar">
+
+        <div class="logoPanel">
+            <h2>MEIER</h2>
+            <p>DISTRIBUCIONES</p>
+        </div>
+
+    </aside>
+
+    <main>
+
+        <h1>Compras</h1>
+
+        <div class="cards">
+            <div class="card">
+                <h3>Total compras</h3>
+                <h2 id="comprasTotal">0</h2>
+            </div>
+            <div class="card">
+                <h3>Gasto total</h3>
+                <h2 id="comprasValor">$0</h2>
+            </div>
+        </div>
+
+        <section>
+            <h2>Registrar compra</h2>
+            <form id="compraForm">
+                <input type="text" id="producto" placeholder="Producto" required>
+                <input type="text" id="proveedor" placeholder="Proveedor" required>
+                <input type="number" id="cantidad" placeholder="Cantidad" min="1" value="1" required>
+                <input type="number" id="precio" placeholder="Precio unitario" min="0" step="0.01" required>
+                <input type="date" id="fecha" required>
+                <textarea id="notas" rows="3" placeholder="Notas adicionales"></textarea>
+                <button type="submit">Guardar compra</button>
+            </form>
+        </section>
+
+        <section>
+            <h2>Historial de compras</h2>
+            <div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th>Proveedor</th>
+                            <th>Cantidad</th>
+                            <th>Precio</th>
+                            <th>Fecha</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody id="comprasTable">
+    <tr>
+        <td colspan="6" style="padding:18px;text-align:center;color:#6b7280;">
+            No hay compras registradas.
+        </td>
+    </tr>
+</tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+</div>
+
+<script src="compras.js"></script>
+
+    <script src="../admin-ui.js"></script>
+</body>
+
+</html>

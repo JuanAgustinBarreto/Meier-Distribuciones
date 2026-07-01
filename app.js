@@ -10,12 +10,18 @@
   const $$ = s => document.querySelectorAll(s);
 
   // Year
-  $("#year").textContent = new Date().getFullYear();
+  $("#year") && ($("#year").textContent = new Date().getFullYear());
 
   // Mobile nav
   const nav = $("#nav");
-  $("#navToggle").addEventListener("click", () => nav.classList.toggle("open"));
-  nav.addEventListener("click", e => { if (e.target.tagName === "A") nav.classList.remove("open"); });
+  const navToggle = $("#navToggle");
+  if (nav && navToggle) {
+    navToggle.addEventListener("click", () => {
+      const isOpen = nav.classList.toggle("open");
+      navToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+    });
+    nav.addEventListener("click", e => { if (e.target.tagName === "A") nav.classList.remove("open"); });
+  }
 
   // Benefits
   const icons = {

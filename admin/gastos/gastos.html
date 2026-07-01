@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gastos | Meier ERP</title>
+
+    <link rel="stylesheet" href="../admin.css">
+    <link rel="stylesheet" href="gastos.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+<div class="dashboard">
+
+    <aside class="sidebar">
+
+        <div class="logoPanel">
+            <h2>MEIER</h2>
+            <p>ERP SISTEMA</p>
+        </div>
+
+        <nav>
+            <a href="../dashboard.html">🏠 Dashboard</a>
+            <a href="../ventas/ventas.html">🛒 Ventas</a>
+            <a href="../compras.html">🚚 Compras</a>
+            <a href="../clientes/clientes.html">👥 Clientes</a>
+            <a href="../reportes.html">📈 Reportes</a>
+            <a href="../estadisticas/estadisticas.html">📊 Estadísticas</a>
+            <a href="gastos.html">💰 Gastos</a>
+        </nav>
+
+        <button id="logout">Cerrar sesión</button>
+
+    </aside>
+
+    <main>
+
+        <h1>💰 Gastos</h1>
+
+        <!-- RESUMEN -->
+        <section class="card">
+            <h3>Total gastos</h3>
+            <h2 id="totalGastos">$0</h2>
+        </section>
+
+        <!-- FORM -->
+        <section>
+            <h2>Registrar gasto</h2>
+
+            <form id="gastosForm">
+
+                <input type="text" name="concepto" placeholder="Concepto" required>
+
+                <input type="number" name="monto" placeholder="Monto" required min="0">
+
+                <input type="date" name="fecha" required>
+
+                <select name="categoria">
+                    <option value="operativo">Operativo</option>
+                    <option value="administrativo">Administrativo</option>
+                    <option value="impuestos">Impuestos</option>
+                    <option value="otros">Otros</option>
+                </select>
+
+                <textarea name="notas" placeholder="Notas"></textarea>
+
+                <button type="submit">Guardar gasto</button>
+
+            </form>
+        </section>
+
+        <!-- TABLE -->
+        <section>
+            <h2>Historial de gastos</h2>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Concepto</th>
+                            <th>Monto</th>
+                            <th>Fecha</th>
+                            <th>Categoría</th>
+                            <th>Notas</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="tablaGastos">
+                        <tr>
+                            <td colspan="6" style="padding:18px;text-align:center;color:#6b7280;">
+                                No hay gastos registrados.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+<script src="gastos.js"></script>
+
+    <script src="../admin-ui.js"></script>
+</body>
+</html>

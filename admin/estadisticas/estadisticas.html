@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estadísticas | Meier ERP</title>
+
+    <link rel="stylesheet" href="../admin.css">
+    <link rel="stylesheet" href="estadisticas.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+<div class="dashboard">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <div class="logoPanel">
+            <h2>MEIER</h2>
+            <p>ERP SISTEMA</p>
+        </div>
+
+        <nav>
+            <a href="../dashboard.html">🏠 Dashboard</a>
+            <a href="../ventas/ventas.html">🛒 Ventas</a>
+            <a href="../compras.html">🚚 Compras</a>
+            <a href="../clientes/clientes.html">👥 Clientes</a>
+            <a href="../reportes.html">📈 Reportes</a>
+            <a href="estadisticas.html">📊 Estadísticas</a>
+        </nav>
+
+        <button id="logout">Cerrar sesión</button>
+
+    </aside>
+
+    <!-- MAIN -->
+    <main>
+
+        <h1>📊 Estadísticas del sistema</h1>
+
+        <!-- CARDS -->
+        <div class="cards">
+
+            <div class="card">
+                <h3>Ventas</h3>
+                <h2 id="statVentas">$0</h2>
+            </div>
+
+            <div class="card">
+                <h3>Compras</h3>
+                <h2 id="statCompras">$0</h2>
+            </div>
+
+            <div class="card">
+                <h3>Gastos</h3>
+                <h2 id="statGastos">$0</h2>
+            </div>
+
+            <div class="card">
+                <h3>Clientes</h3>
+                <h2 id="statClientes">0</h2>
+            </div>
+
+        </div>
+
+        <!-- RESUMEN -->
+        <section>
+            <h2>📅 Resumen general</h2>
+            <p id="monthSummary"></p>
+        </section>
+
+    </main>
+
+</div>
+
+<script src="estadisticas.js"></script>
+
+    <script src="../admin-ui.js"></script>
+</body>
+</html>

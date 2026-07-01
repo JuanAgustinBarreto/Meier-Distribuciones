@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reportes | Meier Distribuciones</title>
+    <link rel="stylesheet" href="admin.css">
+    <link rel="stylesheet" href="reportes/reportes.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+<script src="auth.js"></script>
+
+<div class="dashboard">
+    <aside class="sidebar">
+        <div class="logoPanel">
+            <h2>MEIER</h2>
+            <p>DISTRIBUCIONES</p>
+        </div>
+
+        <nav>
+            <a href="dashboard.html">🏠 Dashboard</a>
+            <a href="productos/productos.html">📦 Productos</a>
+            <a href="ventas/ventas.html">🛒 Ventas</a>
+            <a href="compras.html">🚚 Compras</a>
+            <a href="proveedores/proveedores.html">🏢 Proveedores</a>
+            <a href="clientes/clientes.html">👥 Clientes</a>
+            <a href="gastos/gastos.html">💰 Gastos</a>
+            <a href="reportes.html">📈 Reportes</a>
+            <a href="estadisticas/estadisticas.html">📊 Estadísticas</a>
+            <a href="stock/index.html">📦 Stock</a>
+            <a href="config/index.html">⚙ Configuración</a>
+        </nav>
+
+        <button id="logout">Cerrar sesión</button>
+    </aside>
+
+    <main>
+        <h1>Reportes</h1>
+
+        <section>
+            <h2>Filtrar reportes</h2>
+            <form id="reportForm">
+                <select id="reportType" required>
+                    <option value="ventas">Ventas</option>
+                    <option value="compras">Compras</option>
+                    <option value="gastos">Gastos</option>
+                    <option value="clientes">Clientes</option>
+                    <option value="proveedores">Proveedores</option>
+                </select>
+                <input type="date" id="fromDate">
+                <input type="date" id="toDate">
+                <button type="submit">Generar reporte</button>
+            </form>
+            <div id="reportResult"></div>
+        </section>
+    </main>
+</div>
+
+<script src="reportes.js"></script>
+    <script src="admin-ui.js"></script>
+
+</body>
+
+</html>

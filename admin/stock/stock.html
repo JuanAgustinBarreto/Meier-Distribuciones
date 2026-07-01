@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock | Meier ERP</title>
+
+    <link rel="stylesheet" href="../admin.css">
+    <link rel="stylesheet" href="stock.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+<div class="dashboard">
+
+    <aside class="sidebar">
+
+        <div class="logoPanel">
+            <h2>MEIER</h2>
+            <p>ERP SISTEMA</p>
+        </div>
+
+        <nav>
+            <a href="../dashboard.html">🏠 Dashboard</a>
+            <a href="../productos/productos.html">📦 Productos</a>
+            <a href="../ventas/ventas.html">🛒 Ventas</a>
+            <a href="../compras.html">🚚 Compras</a>
+            <a href="../proveedores/proveedores.html">🏢 Proveedores</a>
+            <a href="../reportes.html">📈 Reportes</a>
+            <a href="stock.html">📦 Stock</a>
+        </nav>
+
+    </aside>
+
+    <main>
+
+        <h1>📦 Stock general</h1>
+
+        <div class="cards">
+            <div class="card">
+                <h3>Productos en sistema</h3>
+                <h2 id="totalProductos">0</h2>
+            </div>
+
+            <div class="card">
+                <h3>Stock total</h3>
+                <h2 id="totalStock">0</h2>
+            </div>
+        </div>
+
+        <section>
+            <h2>Inventario actual</h2>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th>Marca</th>
+                            <th>Categoría</th>
+                            <th>Stock</th>
+                            <th>Valor estimado</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="stockTable">
+                        <tr>
+                            <td colspan="5" style="padding:18px;text-align:center;color:#6b7280;">
+                                No hay productos cargados.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+<script src="stock.js"></script>
+
+    <script src="../admin-ui.js"></script>
+</body>
+</html>

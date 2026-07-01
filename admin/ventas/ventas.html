@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ventas | Meier ERP</title>
+
+    <link rel="stylesheet" href="../admin.css">
+    <link rel="stylesheet" href="ventas.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+<div class="dashboard">
+
+    <aside class="sidebar">
+
+        <div class="logoPanel">
+            <h2>MEIER</h2>
+            <p>ERP SISTEMA</p>
+        </div>
+
+        <nav>
+            <a href="../dashboard.html">🏠 Dashboard</a>
+            <a href="../productos/productos.html">📦 Productos</a>
+            <a href="ventas.html">🛒 Ventas</a>
+            <a href="../compras.html">🚚 Compras</a>
+            <a href="../clientes/clientes.html">👥 Clientes</a>
+            <a href="../reportes.html">📈 Reportes</a>
+            <a href="../stock/stock.html">📦 Stock</a>
+        </nav>
+
+    </aside>
+
+    <main>
+
+        <h1>🛒 Ventas</h1>
+
+        <div class="cards">
+            <div class="card">
+                <h3>Total ventas</h3>
+                <h2 id="ventasTotal">0</h2>
+            </div>
+
+            <div class="card">
+                <h3>Ingresos</h3>
+                <h2 id="ventasIngresos">$0</h2>
+            </div>
+        </div>
+
+        <section>
+            <h2>Nueva venta</h2>
+
+            <form id="ventasForm">
+
+                <select id="producto" required>
+                    <option value="">Seleccionar producto</option>
+                </select>
+
+                <input type="number" id="cantidad" placeholder="Cantidad" min="1" value="1" required>
+
+                <input type="number" id="precio" placeholder="Precio unitario" min="0" step="0.01" required>
+
+                <input type="date" id="fecha" required>
+
+                <textarea id="notas" placeholder="Notas"></textarea>
+
+                <button type="submit">Registrar venta</button>
+
+            </form>
+        </section>
+
+        <section>
+            <h2>Historial</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Cantidad</th>
+                        <th>Precio</th>
+                        <th>Fecha</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+
+                <tbody id="ventasTable"></tbody>
+            </table>
+
+        </section>
+
+    </main>
+
+</div>
+
+<script src="ventas.js"></script>
+
+    <script src="../admin-ui.js"></script>
+</body>
+</html>

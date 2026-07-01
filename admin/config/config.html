@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuración | Meier ERP</title>
+
+    <link rel="stylesheet" href="../admin.css">
+    <link rel="stylesheet" href="config.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+<div class="dashboard">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <div class="logoPanel">
+            <h2>MEIER</h2>
+            <p>ERP SISTEMA</p>
+        </div>
+
+        <nav>
+            <a href="../dashboard.html">🏠 Dashboard</a>
+            <a href="../productos/productos.html">📦 Productos</a>
+            <a href="../ventas/ventas.html">🛒 Ventas</a>
+            <a href="../compras.html">🚚 Compras</a>
+            <a href="../clientes/clientes.html">👥 Clientes</a>
+            <a href="../reportes.html">📈 Reportes</a>
+            <a href="../estadisticas/estadisticas.html">📊 Estadísticas</a>
+            <a href="config.html">⚙ Configuración</a>
+        </nav>
+
+        <button id="logout">Cerrar sesión</button>
+
+    </aside>
+
+    <!-- MAIN -->
+    <main>
+
+        <h1>⚙ Configuración del sistema</h1>
+
+        <section>
+            <h2>Datos de la empresa</h2>
+
+            <form id="configForm">
+
+                <input type="text" id="storeName" placeholder="Nombre del negocio">
+
+                <select id="currency">
+                    <option value="ARS">ARS - Peso Argentino</option>
+                    <option value="USD">USD - Dólar</option>
+                    <option value="EUR">EUR - Euro</option>
+                </select>
+
+                <input type="number" id="taxRate" placeholder="IVA (%)" min="0" step="0.01">
+
+                <textarea id="storeNotes" placeholder="Notas del sistema / empresa"></textarea>
+
+                <button type="submit">Guardar configuración</button>
+
+            </form>
+        </section>
+
+        <section>
+            <h2>Estado del sistema</h2>
+
+            <div class="card">
+                <p><strong>Almacenamiento:</strong> localStorage</p>
+                <p><strong>Modo:</strong> ERP Local (sin backend)</p>
+                <p><strong>Versión:</strong> 1.0</p>
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+<script src="config.js"></script>
+
+    <script src="../admin-ui.js"></script>
+</body>
+</html>

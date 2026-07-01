@@ -1,0 +1,79 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Panel Administrativo | Meier Distribuciones</title>
+
+    <meta name="description"
+          content="Panel Administrativo Meier Distribuciones">
+
+    <link rel="icon" href="assets/img/favicon.png">
+
+    <link rel="stylesheet" href="admin.css">
+
+</head>
+
+<body>
+
+    <div class="loading-screen">
+
+        <div class="loader"></div>
+
+        <h2>MEIER DISTRIBUCIONES</h2>
+
+        <p>Cargando Panel Administrativo...</p>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script src="supabase.js"></script>
+
+    <script src="auth.js"></script>
+
+    <script>
+
+        async function iniciarPanel() {
+
+            try {
+
+                // verifica si hay sesión
+
+                if (!window.Auth.sesionActiva()) {
+
+                    window.location.replace("/admin/login.html");
+
+                    return;
+
+                }
+
+                // si existe sesión
+
+                window.location.replace("/admin/dashboard.html");
+
+            }
+
+            catch (e) {
+
+                console.error(e);
+
+                window.location.replace("/admin/login.html");
+
+            }
+
+        }
+
+        iniciarPanel();
+
+    </script>
+    <script src="admin-ui.js"></script>
+
+</body>
+
+</html>

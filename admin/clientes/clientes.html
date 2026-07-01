@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Clientes | Meier ERP</title>
+
+    <link rel="stylesheet" href="../admin.css">
+    <link rel="stylesheet" href="clientes.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+<div class="dashboard">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="logoPanel">
+            <h2>MEIER</h2>
+            <p>ERP SISTEMA</p>
+        </div>
+
+        <nav>
+            <a href="../dashboard.html">🏠 Dashboard</a>
+            <a href="../productos/productos.html">📦 Productos</a>
+            <a href="../ventas/ventas.html">🛒 Ventas</a>
+            <a href="clientes.html">👥 Clientes</a>
+            <a href="../reportes.html">📈 Reportes</a>
+            <a href="../estadisticas/estadisticas.html">📊 Estadísticas</a>
+        </nav>
+
+        <button id="logout">Cerrar sesión</button>
+    </aside>
+
+    <!-- MAIN -->
+    <main>
+
+        <h1>👥 Clientes</h1>
+
+        <!-- RESUMEN -->
+        <section class="card">
+            <h3>Total de clientes</h3>
+            <h2 id="clientesTotal">0</h2>
+        </section>
+
+        <!-- FORM -->
+        <section>
+            <h2>Nuevo cliente</h2>
+
+            <form id="clienteForm">
+
+                <input type="text" id="nombre" placeholder="Nombre completo" required>
+                <input type="email" id="email" placeholder="Email">
+                <input type="text" id="telefono" placeholder="Teléfono">
+                <input type="text" id="direccion" placeholder="Dirección">
+
+                <button type="submit">Guardar cliente</button>
+
+            </form>
+        </section>
+
+        <!-- TABLE -->
+        <section>
+            <h2>Listado de clientes</h2>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Email</th>
+                            <th>Teléfono</th>
+                            <th>Dirección</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="clientesTable"></tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+</div>
+
+<script src="clientes.js"></script>
+
+    <script src="../admin-ui.js"></script>
+</body>
+</html>
