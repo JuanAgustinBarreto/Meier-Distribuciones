@@ -1,8 +1,8 @@
 (async function(){
 
   // 1. Inicializar cliente de Supabase
-  const SUPABASE_URL = 'https://ayelftqcowykroiwclfs.supabase.co'; // Tu URL de Supabase
-  const SUPABASE_ANON_KEY = 'TU_ANON_KEY_DE_SUPABASE'; // Tu Anon Key pública
+  const SUPABASE_URL = "https://ayelftqcowykroiwclfs.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_Vi4XSoGzkn5Y3pgOkLWpCA_q-vzZ9Uo";
   const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
   // 2. Cargar productos desde Supabase en lugar de productos.json
