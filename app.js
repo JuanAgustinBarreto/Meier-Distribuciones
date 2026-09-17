@@ -1,10 +1,34 @@
 (async function(){
 
-  const response = await fetch("productos.json");
-  const productos = await response.json();
+  // 1. Inicializar cliente de Supabase
+  const SUPABASE_URL = 'https://ayelftqcowykroiwclfs.supabase.co'; // Tu URL de Supabase
+  const SUPABASE_ANON_KEY = 'TU_ANON_KEY_DE_SUPABASE'; // Tu Anon Key pública
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  // 2. Cargar productos desde Supabase en lugar de productos.json
+  const { data: rawProducts, error } = await supabase
+    .from('productos')
+    .select('*')
+    .eq('activo', true);
+
+  if (error) {
+    console.error("Error al cargar productos desde Supabase:", error);
+    return;
+  }
+
+  // Mapear columnas de Supabase a la estructura que espera tu app.js
+  const productos = (rawProducts || []).map(p => ({
+    id: p.id, // UUID string
+    name: p.nombre,
+    category: p.categoria || 'varios',
+    brand: p.marca || '',
+    image: p.imagen_url || 'assets/default.jpg',
+    price: p.precio || 0
+  }));
 
   const D = window.MEIER_DATA;
   D.products = productos;
+
   const fmt = n => "$" + n.toLocaleString("es-AR");
   const $ = s => document.querySelector(s);
   const $$ = s => document.querySelectorAll(s);
@@ -54,24 +78,24 @@
   });
 
   // Brand filter
-const brandFilter = $("#brandFilter");
+  const brandFilter = $("#brandFilter");
+  if (brandFilter) {
+    const marcas = [...new Set(
+      D.products
+        .map(p => p.brand || "")
+        .filter(m => m.trim() !== "")
+    )].sort();
 
-if (brandFilter) {
-  const marcas = [...new Set(
-    D.products
-      .map(p => p.brand || "")
-      .filter(m => m.trim() !== "")
-  )].sort();
+    brandFilter.innerHTML += marcas
+      .map(m => `<option value="${m}">${m}</option>`)
+      .join("");
 
-  brandFilter.innerHTML += marcas
-    .map(m => `<option value="${m}">${m}</option>`)
-    .join("");
+    brandFilter.addEventListener("change", e => {
+      activeBrand = e.target.value;
+      render();
+    });
+  }
 
-  brandFilter.addEventListener("change", e => {
-    activeBrand = e.target.value;
-    render();
-  });
-}
   // Search
   let query = "";
   $("#search").addEventListener("input", e => { query = e.target.value.toLowerCase().trim(); render(); });
@@ -81,14 +105,14 @@ if (brandFilter) {
   const emptyEl = $("#empty");
   function render(){
     const list = D.products.filter(p =>
-  (activeCat === "all" || p.category === activeCat) &&
-  (!activeBrand || p.brand === activeBrand) &&
-  (
-    !query ||
-    p.name.toLowerCase().includes(query) ||
-    (p.brand || "").toLowerCase().includes(query)
-  )
-);
+      (activeCat === "all" || p.category === activeCat) &&
+      (!activeBrand || p.brand === activeBrand) &&
+      (
+        !query ||
+        p.name.toLowerCase().includes(query) ||
+        (p.brand || "").toLowerCase().includes(query)
+      )
+    );
     emptyEl.classList.toggle("hidden", list.length > 0);
     productsEl.innerHTML = list.map(p => `
       <article class="card">
@@ -109,7 +133,7 @@ if (brandFilter) {
 
   productsEl.addEventListener("click", e => {
     const b = e.target.closest("[data-add]"); if (!b) return;
-    addToCart(parseInt(b.dataset.add, 10));
+    addToCart(b.dataset.add); // UUID como string
     openCart();
   });
 
@@ -136,12 +160,11 @@ if (brandFilter) {
   $("#clearCart").addEventListener("click", () => { cart.clear(); drawCart(); });
 
   function totals(){
-  let count = 0;
-  cart.forEach(({qty}) => {
-    count += qty;
-  });
-  return { count };
-}
+    let count = 0;
+    cart.forEach(({qty}) => { count += qty; });
+    return { count };
+  }
+
   function drawCart(){
     const body = $("#cartBody");
     if (cart.size === 0){
@@ -164,16 +187,16 @@ if (brandFilter) {
         </div>`).join("");
     }
     const { count } = totals();
-
-$("#subtotal").textContent = count + " productos";
-$("#total").textContent = count + " productos";
-$("#cartCount").textContent = count;
+    $("#subtotal").textContent = count + " productos";
+    $("#total").textContent = count + " productos";
+    $("#cartCount").textContent = count;
   }
+
   $("#cartBody").addEventListener("click", e => {
     const t = e.target;
-    if (t.dataset.inc) addToCart(+t.dataset.inc);
-    else if (t.dataset.dec){ const c = cart.get(+t.dataset.dec); if (c) setQty(+t.dataset.dec, c.qty-1); }
-    else if (t.dataset.rm) setQty(+t.dataset.rm, 0);
+    if (t.dataset.inc) addToCart(t.dataset.inc);
+    else if (t.dataset.dec){ const c = cart.get(t.dataset.dec); if (c) setQty(t.dataset.dec, c.qty-1); }
+    else if (t.dataset.rm) setQty(t.dataset.rm, 0);
   });
   drawCart();
 
@@ -187,26 +210,65 @@ $("#cartCount").textContent = count;
   modal.addEventListener("click", e => { if (e.target === modal) modal.classList.remove("open"); });
 
   function renderSummary(){
-  const { count } = totals();
+    const { count } = totals();
+    $("#summaryList").innerHTML = [...cart.values()]
+      .map(({product:p,qty}) =>
+        `<li><span>${qty} × ${p.name}</span><span>${qty}</span></li>`
+      ).join("");
+    $("#summaryTotal").textContent = count + " productos";
+  }
 
-  $("#summaryList").innerHTML = [...cart.values()]
-    .map(({product:p,qty}) =>
-      `<li><span>${qty} × ${p.name}</span><span>${qty}</span></li>`
-    ).join("");
-
-  $("#summaryTotal").textContent = count + " productos";
-}
-
-  $("#checkoutForm").addEventListener("submit", e => {
+  // 3. Registrar pedido en Supabase y enviar a WhatsApp
+  $("#checkoutForm").addEventListener("submit", async e => {
     e.preventDefault();
     const f = e.target;
     if (!f.checkValidity()){ f.reportValidity(); return; }
     const data = Object.fromEntries(new FormData(f).entries());
-    const lines = [...cart.values()].map(({product:p,qty}) =>
-  `• ${qty} × ${p.name}`
-).join("\n");
 
-const { count } = totals();
+    const { count } = totals();
+    const lines = [...cart.values()].map(({product:p,qty}) =>
+      `• ${qty} × ${p.name}`
+    ).join("\n");
+
+    try {
+      // Guardar el pedido principal en Supabase
+      const { data: pedidoData, error: pedidoError } = await supabase
+        .from('pedidos')
+        .insert([{
+          cliente_nombre: data.nombre,
+          cliente_apellido: data.apellido,
+          cliente_direccion: data.direccion,
+          cliente_telefono: data.telefono,
+          cliente_email: data.email || null,
+          total: 0,
+          estado: 'nuevo'
+        }])
+        .select()
+        .single();
+
+      if (pedidoError) throw pedidoError;
+
+      // Guardar los ítems asociados al pedido en Supabase
+      const itemsToInsert = [...cart.values()].map(({product:p, qty}) => ({
+        pedido_id: pedidoData.id,
+        producto_id: p.id,
+        nombre_producto: p.name,
+        cantidad: qty,
+        precio_unitario: p.price || 0,
+        subtotal: (p.price || 0) * qty
+      }));
+
+      const { error: itemsError } = await supabase
+        .from('pedido_items')
+        .insert(itemsToInsert);
+
+      if (itemsError) throw itemsError;
+
+    } catch (err) {
+      console.error("Error al registrar pedido en Supabase:", err);
+      alert("Hubo un problema registrando el pedido internamente, pero continuaremos con el envío a WhatsApp.");
+    }
+
     const msg =
 `Hola Meier Distribuciones! 👋
 Quiero hacer un pedido:
@@ -219,7 +281,14 @@ Datos:
 Nombre: ${data.nombre} ${data.apellido}
 Dirección: ${data.direccion}
 Teléfono: ${data.telefono}${data.email?`\nEmail: ${data.email}`:""}`;
+
     window.open(`https://wa.me/${D.whatsapp}?text=${encodeURIComponent(msg)}`, "_blank");
+
+    // Limpiar carrito y cerrar modal
+    cart.clear();
+    drawCart();
+    modal.classList.remove("open");
+    f.reset();
   });
 
   // Header scroll effect
