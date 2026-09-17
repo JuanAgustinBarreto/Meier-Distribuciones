@@ -54,25 +54,24 @@
   });
 
   // Brand filter
-  const brandFilter = $("#brandFilter");
+const brandFilter = $("#brandFilter");
 
-  if (brandFilter) {
-    const marcas = [...new Set(
-      D.products
-        .map(p => p.brand || "")
-        .filter(m => m.trim() !== "")
-    )].sort();
+if (brandFilter) {
+  const marcas = [...new Set(
+    D.products
+      .map(p => p.brand || "")
+      .filter(m => m.trim() !== "")
+  )].sort();
 
-    brandFilter.innerHTML += marcas
-      .map(m => `<option value="${m}">${m}</option>`)
-      .join("");
+  brandFilter.innerHTML += marcas
+    .map(m => `<option value="${m}">${m}</option>`)
+    .join("");
 
-    brandFilter.addEventListener("change", e => {
-      activeBrand = e.target.value;
-      render();
-    });
-  }
-
+  brandFilter.addEventListener("change", e => {
+    activeBrand = e.target.value;
+    render();
+  });
+}
   // Search
   let query = "";
   $("#search").addEventListener("input", e => { query = e.target.value.toLowerCase().trim(); render(); });
@@ -82,14 +81,14 @@
   const emptyEl = $("#empty");
   function render(){
     const list = D.products.filter(p =>
-      (activeCat === "all" || p.category === activeCat) &&
-      (!activeBrand || p.brand === activeBrand) &&
-      (
-        !query ||
-        p.name.toLowerCase().includes(query) ||
-        (p.brand || "").toLowerCase().includes(query)
-      )
-    );
+  (activeCat === "all" || p.category === activeCat) &&
+  (!activeBrand || p.brand === activeBrand) &&
+  (
+    !query ||
+    p.name.toLowerCase().includes(query) ||
+    (p.brand || "").toLowerCase().includes(query)
+  )
+);
     emptyEl.classList.toggle("hidden", list.length > 0);
     productsEl.innerHTML = list.map(p => `
       <article class="card">
@@ -99,7 +98,7 @@
           <h3 class="card__name">${p.name}</h3>
           <div class="card__foot">
             <span class="card__price">Consultar</span>
-            <button class="card__add" data-add="${p.id}" type="button" aria-label="Agregar al carrito">
+            <button class="card__add" data-add="${p.id}" aria-label="Agregar al carrito">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" width="18" height="18"><path d="M12 5v14M5 12h14"/></svg>
             </button>
           </div>
@@ -109,9 +108,8 @@
   render();
 
   productsEl.addEventListener("click", e => {
-    const b = e.target.closest("[data-add]"); 
-    if (!b) return;
-    addToCart(Number(b.dataset.add));
+    const b = e.target.closest("[data-add]"); if (!b) return;
+    addToCart(parseInt(b.dataset.add, 10));
     openCart();
   });
 
@@ -125,10 +123,9 @@
   overlay.addEventListener("click", closeCart);
 
   function addToCart(id, qty=1){
-    const p = D.products.find(x => x.id === id); 
-    if (!p) return;
+    const p = D.products.find(x => x.id === id); if (!p) return;
     const cur = cart.get(id);
-    cart.set(id, { product: p, qty: (cur ? cur.qty : 0) + qty });
+    cart.set(id, { product:p, qty:(cur?cur.qty:0)+qty });
     drawCart();
   }
   function setQty(id, qty){
@@ -139,52 +136,44 @@
   $("#clearCart").addEventListener("click", () => { cart.clear(); drawCart(); });
 
   function totals(){
-    let count = 0;
-    cart.forEach(({qty}) => {
-      count += qty;
-    });
-    return { count };
-  }
-
+  let count = 0;
+  cart.forEach(({qty}) => {
+    count += qty;
+  });
+  return { count };
+}
   function drawCart(){
     const body = $("#cartBody");
     if (cart.size === 0){
       body.innerHTML = '<div class="cart-empty">Tu carrito está vacío.<br/>Agregá productos del catálogo.</div>';
     } else {
-      body.innerHTML = [...cart.entries()].map(([id, {product: p, qty}]) => `
+      body.innerHTML = [...cart.values()].map(({product:p, qty}) => `
         <div class="cart-item">
           <img src="${p.image}" alt="${p.name}" onerror="this.style.visibility='hidden'"/>
           <div>
             <div class="cart-item__name">${p.name}</div>
             <div class="cart-item__brand">${p.category}</div>
             <div class="qty">
-              <button data-dec="${id}" type="button">−</button><span>${qty}</span><button data-inc="${id}" type="button">+</button>
+              <button data-dec="${p.id}">−</button><span>${qty}</span><button data-inc="${p.id}">+</button>
             </div>
           </div>
           <div style="text-align:right">
             <div class="cart-item__price">${qty} unidad(es)</div>
-            <button class="cart-item__remove" data-rm="${id}" type="button">Quitar</button>
+            <button class="cart-item__remove" data-rm="${p.id}">Quitar</button>
           </div>
         </div>`).join("");
     }
     const { count } = totals();
 
-    $("#subtotal").textContent = count + " productos";
-    $("#total").textContent = count + " productos";
-    $("#cartCount").textContent = count;
+$("#subtotal").textContent = count + " productos";
+$("#total").textContent = count + " productos";
+$("#cartCount").textContent = count;
   }
-
   $("#cartBody").addEventListener("click", e => {
     const t = e.target;
-    if (t.dataset.inc) {
-      addToCart(Number(t.dataset.inc));
-    } else if (t.dataset.dec) {
-      const idNum = Number(t.dataset.dec);
-      const c = cart.get(idNum); 
-      if (c) setQty(idNum, c.qty - 1);
-    } else if (t.dataset.rm) {
-      setQty(Number(t.dataset.rm), 0);
-    }
+    if (t.dataset.inc) addToCart(+t.dataset.inc);
+    else if (t.dataset.dec){ const c = cart.get(+t.dataset.dec); if (c) setQty(+t.dataset.dec, c.qty-1); }
+    else if (t.dataset.rm) setQty(+t.dataset.rm, 0);
   });
   drawCart();
 
@@ -198,26 +187,26 @@
   modal.addEventListener("click", e => { if (e.target === modal) modal.classList.remove("open"); });
 
   function renderSummary(){
-    const { count } = totals();
+  const { count } = totals();
 
-    $("#summaryList").innerHTML = [...cart.values()]
-      .map(({product:p, qty}) =>
-        `<li><span>${qty} × ${p.name}</span><span>${qty}</span></li>`
-      ).join("");
+  $("#summaryList").innerHTML = [...cart.values()]
+    .map(({product:p,qty}) =>
+      `<li><span>${qty} × ${p.name}</span><span>${qty}</span></li>`
+    ).join("");
 
-    $("#summaryTotal").textContent = count + " productos";
-  }
+  $("#summaryTotal").textContent = count + " productos";
+}
 
   $("#checkoutForm").addEventListener("submit", e => {
     e.preventDefault();
     const f = e.target;
     if (!f.checkValidity()){ f.reportValidity(); return; }
     const data = Object.fromEntries(new FormData(f).entries());
-    const lines = [...cart.values()].map(({product:p, qty}) =>
-      `• ${qty} × ${p.name}`
-    ).join("\n");
+    const lines = [...cart.values()].map(({product:p,qty}) =>
+  `• ${qty} × ${p.name}`
+).join("\n");
 
-    const { count } = totals();
+const { count } = totals();
     const msg =
 `Hola Meier Distribuciones! 👋
 Quiero hacer un pedido:
