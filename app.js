@@ -1,299 +1,546 @@
 (async function(){
 
-  // 1. Inicializar cliente de Supabase
-  const SUPABASE_URL = "https://ayelftqcowykroiwclfs.supabase.co";
-const SUPABASE_ANON_KEY = "sb_publishable_Vi4XSoGzkn5Y3pgOkLWpCA_q-vzZ9Uo";
-  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  // 2. Cargar productos desde Supabase en lugar de productos.json
-  const { data: rawProducts, error } = await supabase
-    .from('productos')
-    .select('*')
-    .eq('activo', true);
 
-  if (error) {
-    console.error("Error al cargar productos desde Supabase:", error);
-    return;
-  }
+  const response = await fetch("productos.json");
 
-  // Mapear columnas de Supabase a la estructura que espera tu app.js
-  const productos = (rawProducts || []).map(p => ({
-    id: p.id, // UUID string
-    name: p.nombre,
-    category: p.categoria || 'varios',
-    brand: p.marca || '',
-    image: p.imagen_url || 'assets/default.jpg',
-    price: p.precio || 0
-  }));
+  const productos = await response.json();
+
+
 
   const D = window.MEIER_DATA;
+
   D.products = productos;
 
   const fmt = n => "$" + n.toLocaleString("es-AR");
+
   const $ = s => document.querySelector(s);
+
   const $$ = s => document.querySelectorAll(s);
 
+
+
   // Year
+
   $("#year") && ($("#year").textContent = new Date().getFullYear());
 
+
+
   // Mobile nav
+
   const nav = $("#nav");
+
   const navToggle = $("#navToggle");
+
   if (nav && navToggle) {
+
     navToggle.addEventListener("click", () => {
+
       const isOpen = nav.classList.toggle("open");
+
       navToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+
     });
+
     nav.addEventListener("click", e => { if (e.target.tagName === "A") nav.classList.remove("open"); });
+
   }
+
+
 
   // Benefits
+
   const icons = {
+
     user:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>',
+
     grid:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>',
+
     truck:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><path d="M1 7h13v10H1zM14 10h5l3 3v4h-8z"/><circle cx="6" cy="19" r="2"/><circle cx="18" cy="19" r="2"/></svg>',
+
     star:'<svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22"><path d="m12 2 3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"/></svg>',
+
     shop:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><path d="M3 9 4 4h16l1 5"/><path d="M4 9v11h16V9"/><path d="M9 22V12h6v10"/></svg>',
+
     chat:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 21l1.9-5.3A8 8 0 1 1 21 12Z"/></svg>'
+
   };
+
   $("#benefits").innerHTML = D.benefits.map(b => `
+
     <article class="benefit">
+
       <div class="benefit__icon">${icons[b.icon] || icons.star}</div>
+
       <h3>${b.title}</h3><p>${b.desc}</p>
+
     </article>`).join("");
 
+
+
   // Brands
+
   $("#brands").innerHTML = D.brands.map(b => `<div class="brand">${b}</div>`).join("");
 
+
+
   // Filters
+
   const filtersEl = $("#filters");
+
   let activeCat = "all";
+
   let activeBrand = "";
+
   filtersEl.innerHTML = D.categories.map(c => `<button class="chip${c.id==="all"?" active":""}" data-cat="${c.id}">${c.label}</button>`).join("");
+
   filtersEl.addEventListener("click", e => {
+
     const b = e.target.closest(".chip"); if (!b) return;
+
     activeCat = b.dataset.cat;
+
     $$(".chip").forEach(c => c.classList.toggle("active", c === b));
+
     render();
+
   });
+
+
 
   // Brand filter
-  const brandFilter = $("#brandFilter");
-  if (brandFilter) {
-    const marcas = [...new Set(
-      D.products
-        .map(p => p.brand || "")
-        .filter(m => m.trim() !== "")
-    )].sort();
 
-    brandFilter.innerHTML += marcas
-      .map(m => `<option value="${m}">${m}</option>`)
-      .join("");
+const brandFilter = $("#brandFilter");
 
-    brandFilter.addEventListener("change", e => {
-      activeBrand = e.target.value;
-      render();
-    });
-  }
 
-  // Search
-  let query = "";
-  $("#search").addEventListener("input", e => { query = e.target.value.toLowerCase().trim(); render(); });
 
-  // Products
-  const productsEl = $("#products");
-  const emptyEl = $("#empty");
-  function render(){
-    const list = D.products.filter(p =>
-      (activeCat === "all" || p.category === activeCat) &&
-      (!activeBrand || p.brand === activeBrand) &&
-      (
-        !query ||
-        p.name.toLowerCase().includes(query) ||
-        (p.brand || "").toLowerCase().includes(query)
-      )
-    );
-    emptyEl.classList.toggle("hidden", list.length > 0);
-    productsEl.innerHTML = list.map(p => `
-      <article class="card">
-        <div class="card__img"><img src="${p.image}" alt="${p.name}" loading="lazy" onerror="this.style.display='none'"/></div>
-        <div class="card__body">
-          <span class="card__brand">${p.category}</span>
-          <h3 class="card__name">${p.name}</h3>
-          <div class="card__foot">
-            <span class="card__price">Consultar</span>
-            <button class="card__add" data-add="${p.id}" aria-label="Agregar al carrito">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" width="18" height="18"><path d="M12 5v14M5 12h14"/></svg>
-            </button>
-          </div>
-        </div>
-      </article>`).join("");
-  }
-  render();
+if (brandFilter) {
 
-  productsEl.addEventListener("click", e => {
-    const b = e.target.closest("[data-add]"); if (!b) return;
-    addToCart(b.dataset.add); // UUID como string
-    openCart();
+  const marcas = [...new Set(
+
+    D.products
+
+      .map(p => p.brand || "")
+
+      .filter(m => m.trim() !== "")
+
+  )].sort();
+
+
+
+  brandFilter.innerHTML += marcas
+
+    .map(m => `<option value="${m}">${m}</option>`)
+
+    .join("");
+
+
+
+  brandFilter.addEventListener("change", e => {
+
+    activeBrand = e.target.value;
+
+    render();
+
   });
 
+}
+
+  // Search
+
+  let query = "";
+
+  $("#search").addEventListener("input", e => { query = e.target.value.toLowerCase().trim(); render(); });
+
+
+
+  // Products
+
+  const productsEl = $("#products");
+
+  const emptyEl = $("#empty");
+
+  function render(){
+
+    const list = D.products.filter(p =>
+
+  (activeCat === "all" || p.category === activeCat) &&
+
+  (!activeBrand || p.brand === activeBrand) &&
+
+  (
+
+    !query ||
+
+    p.name.toLowerCase().includes(query) ||
+
+    (p.brand || "").toLowerCase().includes(query)
+
+  )
+
+);
+
+    emptyEl.classList.toggle("hidden", list.length > 0);
+
+    productsEl.innerHTML = list.map(p => `
+
+      <article class="card">
+
+        <div class="card__img"><img src="${p.image}" alt="${p.name}" loading="lazy" onerror="this.style.display='none'"/></div>
+
+        <div class="card__body">
+
+          <span class="card__brand">${p.category}</span>
+
+          <h3 class="card__name">${p.name}</h3>
+
+          <div class="card__foot">
+
+            <span class="card__price">Consultar</span>
+
+            <button class="card__add" data-add="${p.id}" aria-label="Agregar al carrito">
+
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" width="18" height="18"><path d="M12 5v14M5 12h14"/></svg>
+
+            </button>
+
+          </div>
+
+        </div>
+
+      </article>`).join("");
+
+  }
+
+  render();
+
+
+
+  productsEl.addEventListener("click", e => {
+
+    const b = e.target.closest("[data-add]"); if (!b) return;
+
+    addToCart(parseInt(b.dataset.add, 10));
+
+    openCart();
+
+  });
+
+
+
   // Cart
+
   const cart = new Map();
+
   const cartEl = $("#cart"), overlay = $("#overlay");
+
   function openCart(){ cartEl.classList.add("open"); overlay.classList.add("show"); }
+
   function closeCart(){ cartEl.classList.remove("open"); overlay.classList.remove("show"); }
+
   $("#cartOpen").addEventListener("click", openCart);
+
   $("#cartClose").addEventListener("click", closeCart);
+
   overlay.addEventListener("click", closeCart);
 
+
+
   function addToCart(id, qty=1){
+
     const p = D.products.find(x => x.id === id); if (!p) return;
+
     const cur = cart.get(id);
+
     cart.set(id, { product:p, qty:(cur?cur.qty:0)+qty });
+
     drawCart();
+
   }
+
   function setQty(id, qty){
+
     if (qty <= 0) cart.delete(id);
+
     else { const c = cart.get(id); if (c) c.qty = qty; }
+
     drawCart();
+
   }
+
   $("#clearCart").addEventListener("click", () => { cart.clear(); drawCart(); });
 
+
+
   function totals(){
-    let count = 0;
-    cart.forEach(({qty}) => { count += qty; });
-    return { count };
-  }
+
+  let count = 0;
+
+  cart.forEach(({qty}) => {
+
+    count += qty;
+
+  });
+
+  return { count };
+
+}
 
   function drawCart(){
+
     const body = $("#cartBody");
+
     if (cart.size === 0){
+
       body.innerHTML = '<div class="cart-empty">Tu carrito está vacío.<br/>Agregá productos del catálogo.</div>';
+
     } else {
+
       body.innerHTML = [...cart.values()].map(({product:p, qty}) => `
+
         <div class="cart-item">
+
           <img src="${p.image}" alt="${p.name}" onerror="this.style.visibility='hidden'"/>
+
           <div>
+
             <div class="cart-item__name">${p.name}</div>
+
             <div class="cart-item__brand">${p.category}</div>
+
             <div class="qty">
+
               <button data-dec="${p.id}">−</button><span>${qty}</span><button data-inc="${p.id}">+</button>
+
             </div>
+
           </div>
+
           <div style="text-align:right">
+
             <div class="cart-item__price">${qty} unidad(es)</div>
+
             <button class="cart-item__remove" data-rm="${p.id}">Quitar</button>
+
           </div>
+
         </div>`).join("");
+
     }
+
     const { count } = totals();
-    $("#subtotal").textContent = count + " productos";
-    $("#total").textContent = count + " productos";
-    $("#cartCount").textContent = count;
+
+
+
+$("#subtotal").textContent = count + " productos";
+
+$("#total").textContent = count + " productos";
+
+$("#cartCount").textContent = count;
+
   }
 
   $("#cartBody").addEventListener("click", e => {
+
     const t = e.target;
-    if (t.dataset.inc) addToCart(t.dataset.inc);
-    else if (t.dataset.dec){ const c = cart.get(t.dataset.dec); if (c) setQty(t.dataset.dec, c.qty-1); }
-    else if (t.dataset.rm) setQty(t.dataset.rm, 0);
+
+    if (t.dataset.inc) addToCart(+t.dataset.inc);
+
+    else if (t.dataset.dec){ const c = cart.get(+t.dataset.dec); if (c) setQty(+t.dataset.dec, c.qty-1); }
+
+    else if (t.dataset.rm) setQty(+t.dataset.rm, 0);
+
   });
+
   drawCart();
 
+
+
   // Checkout modal
+
   const modal = $("#checkout");
+
   $("#goCheckout").addEventListener("click", () => {
+
     if (cart.size === 0){ alert("Tu carrito está vacío."); return; }
+
     renderSummary(); modal.classList.add("open"); closeCart();
+
   });
+
   $("#checkoutClose").addEventListener("click", () => modal.classList.remove("open"));
+
   modal.addEventListener("click", e => { if (e.target === modal) modal.classList.remove("open"); });
 
-  function renderSummary(){
-    const { count } = totals();
-    $("#summaryList").innerHTML = [...cart.values()]
-      .map(({product:p,qty}) =>
-        `<li><span>${qty} × ${p.name}</span><span>${qty}</span></li>`
-      ).join("");
-    $("#summaryTotal").textContent = count + " productos";
-  }
 
-  // 3. Registrar pedido en Supabase y enviar a WhatsApp
-  $("#checkoutForm").addEventListener("submit", async e => {
+
+  function renderSummary(){
+
+  const { count } = totals();
+
+
+
+  $("#summaryList").innerHTML = [...cart.values()]
+
+    .map(({product:p,qty}) =>
+
+      `<li><span>${qty} × ${p.name}</span><span>${qty}</span></li>`
+
+    ).join("");
+
+
+
+  $("#summaryTotal").textContent = count + " productos";
+
+}
+
+
+
+  $("#checkoutForm").addEventListener("submit", e => {
+
     e.preventDefault();
+
     const f = e.target;
+
     if (!f.checkValidity()){ f.reportValidity(); return; }
+
     const data = Object.fromEntries(new FormData(f).entries());
 
-    const { count } = totals();
     const lines = [...cart.values()].map(({product:p,qty}) =>
-      `• ${qty} × ${p.name}`
-    ).join("\n");
 
-    try {
-      // Guardar el pedido principal en Supabase
-      const { data: pedidoData, error: pedidoError } = await supabase
-        .from('pedidos')
-        .insert([{
-          cliente_nombre: data.nombre,
-          cliente_apellido: data.apellido,
-          cliente_direccion: data.direccion,
-          cliente_telefono: data.telefono,
-          cliente_email: data.email || null,
-          total: 0,
-          estado: 'nuevo'
-        }])
-        .select()
-        .single();
+  `• ${qty} × ${p.name}`
 
-      if (pedidoError) throw pedidoError;
+).join("\n");
 
-      // Guardar los ítems asociados al pedido en Supabase
-      const itemsToInsert = [...cart.values()].map(({product:p, qty}) => ({
-        pedido_id: pedidoData.id,
-        producto_id: p.id,
-        nombre_producto: p.name,
-        cantidad: qty,
-        precio_unitario: p.price || 0,
-        subtotal: (p.price || 0) * qty
-      }));
 
-      const { error: itemsError } = await supabase
-        .from('pedido_items')
-        .insert(itemsToInsert);
 
-      if (itemsError) throw itemsError;
-
-    } catch (err) {
-      console.error("Error al registrar pedido en Supabase:", err);
-      alert("Hubo un problema registrando el pedido internamente, pero continuaremos con el envío a WhatsApp.");
-    }
+const { count } = totals();
 
     const msg =
+
 `Hola Meier Distribuciones! 👋
+
 Quiero hacer un pedido:
+
+
 
 ${lines}
 
+
+
 *Cantidad total de productos: ${count}*
 
+
+
 Datos:
+
 Nombre: ${data.nombre} ${data.apellido}
+
 Dirección: ${data.direccion}
+
 Teléfono: ${data.telefono}${data.email?`\nEmail: ${data.email}`:""}`;
 
     window.open(`https://wa.me/${D.whatsapp}?text=${encodeURIComponent(msg)}`, "_blank");
 
-    // Limpiar carrito y cerrar modal
-    cart.clear();
-    drawCart();
-    modal.classList.remove("open");
-    f.reset();
   });
 
+
+
   // Header scroll effect
+
   const header = $("#header");
+
   window.addEventListener("scroll", () => {
+
     header.style.boxShadow = window.scrollY > 8 ? "0 6px 18px -10px rgba(15,23,42,.18)" : "none";
+
   });
+
 })();
+
+
+
+
+
+y data.js: window.MEIER_DATA = {
+
+  whatsapp: "5493435423041",
+
+
+
+  benefits: [
+
+    { icon: "user", title: "Atención personalizada", desc: "Te asesoramos según tu comercio o necesidad." },
+
+    { icon: "grid", title: "Amplio catálogo", desc: "Bebidas, alimentos, limpieza y más en stock." },
+
+    { icon: "truck", title: "Entrega rápida", desc: "Logística propia con despacho ágil." },
+
+    { icon: "star", title: "Primeras marcas", desc: "Trabajamos con marcas líderes del país." },
+
+    { icon: "shop", title: "Mayorista y minorista", desc: "Atendemos a comercios." },
+
+    { icon: "chat", title: "Pedidos por WhatsApp", desc: "Pedí fácil desde tu celular en minutos." }
+
+  ],
+
+
+
+  brands: [],
+
+
+
+  categories: [
+
+    { id: "all", label: "Todos" },
+
+    { id: "alfajores", label: "Alfajores" },
+
+    { id: "bonificaciones", label: "Bonificaciones"},
+
+    { id: "caramelos", label: "Caramelos" },
+
+    { id: "chicles", label: "Chicles" },
+
+    { id: "chocolates", label: "Chocolates" },
+
+    { id: "chupetines", label: "Chupetines" },
+
+    { id: "copetin", label: "Copetin"},
+
+    { id: "danica", label: "Danica"},
+
+    { id: "descuentos", label: "Descuentos"},
+
+    { id: "dulcor", label: "Dulcor" },
+
+    { id: "fiambres", label: "Fiambres" },
+
+    { id: "galletitas", label: "Galletitas" },
+
+    { id: "gomitas", label: "Gomitas" },
+
+    { id: "jugos", label: "Jugos" },
+
+    { id: "lacteos", label: "Lacteos" },
+
+    { id: "lacteos cremigal", label: "Lacteos Cremigal" },
+
+    { id: "mantecoles", label: "Mantecoles"},
+
+    { id: "nuevos ingresos", label: "Nuevos Ingresos"},
+
+    { id: "pastillas", label: "Pastillas"},
+
+    { id: "productos fiestas", label: "Productos Fiestas"},
+
+    { id: "productos varios", label: "Productos Varios"},
+
+  ],
+
+
+
+  products: []
+
+}; 
+
